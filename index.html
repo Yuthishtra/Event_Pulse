@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>EventPulse — Final Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#fff5f0;--bg2:#fff2e8;--card:rgba(255,255,255,0.95);--accent:#ff6f61;--accent2:#ff9a76;--muted:#6b6b6b}
+*{box-sizing:border-box}body{font-family:Inter,system-ui,Arial;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#222;margin:0;padding:22px;min-height:100vh}
+.container{max-width:1200px;margin:0 auto}header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;box-shadow:0 10px 30px rgba(255,111,97,0.12)}h1{margin:0;font-size:22px}.nav{display:flex;gap:18px;align-items:center}
+.tag{font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr;gap:14px}@media(min-width:1000px){.grid{grid-template-columns:2fr 1fr}}
+.card{background:var(--card);backdrop-filter: blur(6px);border-radius:14px;padding:14px;box-shadow:0 8px 30px rgba(23,18,18,0.05)}
+.video-wrap{position:relative;border-radius:12px;overflow:hidden;background:#000;height:360px}
+#mainVideo{width:100%;height:100%;display:block;object-fit:cover;background:#000}
+#overlayCanvas{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+.live-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#28c76f;margin-right:8px;box-shadow:0 4px 12px rgba(40,199,111,0.2);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,111,97,0.3)}70%{box-shadow:0 0 0 14px rgba(255,111,97,0)}100%{box-shadow:0 0 0 0 rgba(255,111,97,0)}}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{background:linear-gradient(90deg,var(--accent),var(--accent2));color:white;padding:8px 12px;border-radius:10px;border:none;font-weight:700;cursor:pointer;box-shadow:0 10px 22px rgba(255,111,97,0.12)}
+.btn-ghost{background:transparent;border:1px solid rgba(0,0,0,0.06);padding:8px 10px;border-radius:10px;cursor:pointer}
+.pill{background:linear-gradient(90deg,#fff,#fff);padding:8px 12px;border-radius:999px;font-weight:600}
+.small{font-size:13px;color:var(--muted)}.list{margin-top:10px}
+.task{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:10px;margin-bottom:8px;background:linear-gradient(180deg,#fff,#fff);border:1px solid rgba(0,0,0,0.03);transition:transform .18s ease}
+.task:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(20,20,20,0.06)}
+.incident{padding:10px;border-radius:10px;margin-bottom:8px;background:linear-gradient(180deg,#fff8f7,#fff5f4);border-left:4px solid rgba(255,111,97,0.9)}
+.dept{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;margin-bottom:8px;background:linear-gradient(180deg,#fff,#fff);border:1px solid rgba(0,0,0,0.03)}
+.timeline-item{padding:10px;border-radius:10px;margin-bottom:8px;background:linear-gradient(180deg,#fff,#fff);border:1px solid rgba(0,0,0,0.03);opacity:0.95}
+.footer{margin-top:12px;text-align:center;color:var(--muted);font-size:13px}
+.input{padding:8px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);width:100%}
+.sos{background:linear-gradient(90deg,#ff9aa2,#ff6f61);color:white;padding:12px;border-radius:12px;border:none;cursor:pointer;font-weight:800;box-shadow:0 12px 24px rgba(255,111,97,0.14);width:100%}
+.notice{background:linear-gradient(90deg,#fff7f6,#fff3f2);padding:8px;border-radius:8px;color:var(--muted);margin-top:8px}
+.toast{position:fixed;right:20px;bottom:20px;min-width:260px;background:white;padding:12px;border-radius:10px;box-shadow:0 18px 40px rgba(0,0,0,0.12);display:none;align-items:center;gap:8px}
+.sms-sim{position:fixed;left:20px;bottom:20px;width:300px;background:linear-gradient(180deg,#fff,#fff);border-radius:12px;padding:12px;box-shadow:0 18px 40px rgba(0,0,0,0.08);display:none}
+.onboard{position:fixed;right:20px;top:80px;background:linear-gradient(90deg,#fff,#fff);padding:12px;border-radius:12px;box-shadow:0 18px 40px rgba(0,0,0,0.08);display:none;max-width:300px}
+.metric{font-size:34px;font-weight:800}
+.kv{display:flex;gap:12px;align-items:center}
+</style></head><body>
+<div class="container">
+  <header>
+    <div class="brand">
+      <div class="logo">EP</div>
+      <div>
+        <h1>EventPulse</h1>
+        <div class="tag">Live Operations — Festival Demo</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="pill"><span class="live-dot"></span>Live</div>
+      <button class="btn" onclick="startDemo()">Start Demo</button>
+    </div>
+  </header>
+  <div class="grid">
+    <main>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong>Live CCTV • Music Festival</strong><div class="small">Demo clip plays here (simulated detection overlays)</div></div>
+          <div style="width:360px;display:flex;gap:8px;align-items:center">
+            <input id="streamUrl" class="input" placeholder="(optional) paste HLS (.m3u8) URL to use real stream" />
+            <button class="btn-ghost" onclick="applyStream()">Use</button>
+          </div>
+        </div>
+        <div class="video-wrap" id="videoWrap">
+          <video id="mainVideo" playsinline autoplay muted loop>
+            <source src="sample_festival.mp4" type="video/mp4">
+            Your browser does not support HTML5 video.
+          </video>
+          <canvas id="overlayCanvas"></canvas>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+          <div class="kv"><div class="pill" id="crowdLevel">People: --</div></div>
+          <div class="small" id="crowdSource">Source: Demo clip</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong>Tasks</strong><div class="small">Assign tasks to teams</div></div>
+          <div style="display:flex;gap:8px"><button class="btn-ghost" onclick="markAll('inprogress')">Start all</button><button class="btn" onclick="markAll('done')">Complete all</button></div>
+        </div>
+        <div id="tasksList" class="list"></div>
+        <form id="taskForm" onsubmit="return createTask(event)" style="margin-top:8px">
+          <input id="taskTitle" class="input" placeholder="New task title" required />
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input id="taskTeam" class="input" placeholder="Team (AV, Security, Catering)" style="flex:1" />
+            <button class="btn" style="min-width:120px">Create</button>
+          </div>
+        </form>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong>Incidents</strong><div class="small">Auto and manual alerts</div></div>
+          <div><button class="sos" onclick="womenSOS()">Women's SOS</button></div>
+        </div>
+        <div id="incidentsList" class="list"></div>
+        <form id="incidentForm" onsubmit="return createIncident(event)" style="margin-top:8px">
+          <input id="incTitle" class="input" placeholder="Issue title (e.g., Projector broken)" required />
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input id="incArea" class="input" placeholder="Area (Gate A, Main Stage...)" />
+            <select id="incPriority" class="input" style="width:140px"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>
+          </div>
+          <textarea id="incNote" class="input" placeholder="Optional note" style="margin-top:8px;min-height:80px"></textarea>
+          <div style="display:flex;gap:8px;margin-top:8px"><button class="btn">Log Incident</button></div>
+        </form>
+      </div>
+    </main>
+    <aside>
+      <div class="card">
+        <strong>Departments</strong>
+        <div class="small">Live routing of alerts</div>
+        <div style="margin-top:12px">
+          <div class="dept"><div><strong>AV</strong><div class="small">Audio & Visual</div></div><div class="pill" id="avCount">0</div></div>
+          <div class="dept"><div><strong>Catering</strong><div class="small">Food & Beverage</div></div><div class="pill" id="cateringCount">0</div></div>
+          <div class="dept"><div><strong>Security</strong><div class="small">Safety & Crowd Control</div></div><div class="pill" id="securityCount">0</div></div>
+          <div class="dept"><div><strong>Medical</strong><div class="small">First Aid</div></div><div class="pill" id="medicalCount">0</div></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <strong>Command Timeline</strong>
+        <div id="timeline" style="margin-top:8px"></div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <strong>Demo Controls</strong>
+        <div class="small" style="margin-top:8px">Use Demo Mode to simulate crowd & notifications</div>
+        <div style="display:flex;gap:8px;margin-top:8px"><button class="btn" onclick="startDemo()">Start Demo</button><button class="btn-ghost" onclick="stopDemo()">Stop Demo</button></div>
+      </div>
+    </aside>
+  </div>
+  <div class="footer">© EventPulse — Hackathon Demo</div>
+</div>
+<div id="toast" class="toast"></div>
+<div id="smsSim" class="sms-sim"></div>
+<div id="onboard" class="onboard"></div>
+<script>
+let state = { tasks: [], incidents: [], events: [], crowd: [] };
+const THRESHOLD = 60;
+function showToast(msg){ const t=document.getElementById('toast'); t.style.display='flex'; t.innerHTML = '<div style="font-weight:700">'+msg+'</div>'; setTimeout(()=> t.style.display='none', 4500); }
+function showSms(num, text){ const s=document.getElementById('smsSim'); s.style.display='block'; s.innerHTML = '<div style="font-weight:700;margin-bottom:8px">Mock SMS to '+num+'</div><div style="font-size:14px">'+text+'</div>'; setTimeout(()=> s.style.display='none', 6000); }
+function addEvent(type, payload){ const ev = { ts: new Date().toISOString(), type, payload }; state.events.unshift(ev); renderTimeline(); }
+function renderTasks(){ const el=document.getElementById('tasksList'); el.innerHTML=''; state.tasks.forEach(t=>{ const div=document.createElement('div'); div.className='task'; div.innerHTML = `<div><strong>${t.title}</strong><div class="small">${t.team}</div></div><div style="display:flex;gap:8px;align-items:center"><div class="pill">${t.status}</div><select onchange="updateTaskStatus('${'${t.id}'}', this.value)"><option value="todo"${'${t.status}'}==='todo'?' selected':'''>To do</option><option value="inprogress"${'${t.status}'}==='inprogress'?' selected':'''>In progress</option><option value="done"${'${t.status}'}==='done'?' selected':'''>Done</option></select></div>`; el.appendChild(div); }); }
+function createTask(e){ e.preventDefault(); const title=document.getElementById('taskTitle').value.trim(); const team=document.getElementById('taskTeam').value.trim(); if(!title) return alert('title required'); const t={ id:'t'+Date.now(), title, team: team||'General', status:'todo' }; state.tasks.unshift(t); addEvent('task_created', t); renderTasks(); document.getElementById('taskTitle').value=''; document.getElementById('taskTeam').value=''; return false; }
+function updateTaskStatus(id,status){ const t=state.tasks.find(x=>x.id===id); if(!t) return; t.status=status; addEvent('task_updated', t); renderTasks(); }
+function markAll(status){ state.tasks.forEach(t=>t.status=status); renderTasks(); addEvent('task_bulk', {status}); }
+function renderIncidents(){ const el=document.getElementById('incidentsList'); el.innerHTML=''; state.incidents.forEach(i=>{ const d=document.createElement('div'); d.className='incident'; d.innerHTML=`<div style="display:flex;justify-content:space-between"><div><strong>${i.title}</strong><div class="small">${i.area} • ${i.priority}</div></div><div class="pill">${i.status}</div></div><div class="small" style="margin-top:8px">${i.note||''}</div>`; el.appendChild(d); }); }
+function createIncident(e){ e.preventDefault(); const title=document.getElementById('incTitle').value.trim(); const area=document.getElementById('incArea').value.trim(); const priority=document.getElementById('incPriority').value; const note=document.getElementById('incNote').value.trim(); if(!title) return alert('title required'); const inc={ id:'i'+Date.now(), title, area: area||'Unknown', priority: priority||'medium', note, status:'open', created: new Date().toISOString() }; state.incidents.unshift(inc); addEvent('incident_created', inc); renderIncidents(); document.getElementById('incTitle').value=''; document.getElementById('incArea').value=''; document.getElementById('incNote').value=''; return false; }
+function resolveIncident(id){ const inc = state.incidents.find(i=>i.id===id); if(!inc) return; inc.status='resolved'; addEvent('incident_resolved', inc); renderIncidents(); }
+function renderTimeline(){ const el=document.getElementById('timeline'); el.innerHTML=''; (state.events||[]).slice(0,30).forEach(e=>{ const div=document.createElement('div'); div.className='timeline-item'; div.innerHTML=`<strong>${e.type}</strong><div class="small">${new Date(e.ts).toLocaleTimeString()}</div><div class="small">${JSON.stringify(e.payload).slice(0,120)}</div>`; el.appendChild(div); }); }
+const video = document.getElementById('mainVideo'); const canvas = document.getElementById('overlayCanvas'); const ctx = canvas.getContext('2d'); let simInterval = null; let dots = []; function resizeCanvas(){ const rect = video.getBoundingClientRect(); canvas.width = rect.width; canvas.height = rect.height; canvas.style.left = rect.left + 'px'; canvas.style.top = rect.top + 'px'; }window.addEventListener('resize', resizeCanvas); video.addEventListener('loadedmetadata', resizeCanvas);
+function startSimulation(){ dots = []; const W = 640, H = 360; for(let i=0;i<120;i++){ dots.push({ x: Math.random()*W, y: H*0.4 + Math.random()*H*0.5, vx:(Math.random()-0.5)*2, vy:(Math.random()-0.5)*0.6, size:2+Math.random()*3 }); } if(simInterval) clearInterval(simInterval); simInterval = setInterval(()=>{ const scaleX = canvas.width / 640; const scaleY = canvas.height / 360; ctx.clearRect(0,0,canvas.width,canvas.height); let count = 0; for(let d of dots){ d.x += d.vx + (Math.random()-0.5)*0.6; d.y += d.vy + (Math.random()-0.5)*0.2; if(d.x<10) d.x=10; if(d.x>630) d.x=630; if(d.y<144) d.y=144; if(d.y>350) d.y=350; const gx = d.x * scaleX, gy = d.y * scaleY, r = d.size * ((scaleX+scaleY)/2); const grd = ctx.createRadialGradient(gx,gy,0,gx,gy,r*4); const intensity = 0.08 + Math.random()*0.12; grd.addColorStop(0, `rgba(255,90,70,${intensity})`); grd.addColorStop(1, `rgba(255,90,70,0)`); ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(gx,gy,r*4,0,Math.PI*2); ctx.fill(); count++; } document.getElementById('crowdLevel').textContent = 'People: ' + count; const payload = { source:'demo', people_count: count, ts: new Date().toISOString() }; state.crowd.unshift(payload); if(state.crowd.length>100) state.crowd.pop(); addEvent('crowd_update', payload); if(count >= THRESHOLD){ const last = state.incidents[0]; if(!last || (new Date() - new Date(last.created) > 30000)){ const inc = { id:'i'+Date.now(), title:`High Density in Stage Zone (${count})`, area:'Main Stage', priority:'high', note:'Auto-detected crowd density', status:'open', created:new Date().toISOString() }; state.incidents.unshift(inc); addEvent('incident_created', inc); renderIncidents(); showToast('⚠️ High crowd density — Security alerted'); showSms('+91 98765 43210', 'ALERT: High density at Main Stage. Dispatch Security.'); } } renderIncidents(); }, 1400); }
+function stopSimulation(){ if(simInterval) clearInterval(simInterval); simInterval = null; }
+function startDemo(){ video.play(); resizeCanvas(); startSimulation(); showToast('Demo started — synthetic crowd'); }
+function stopDemo(){ stopSimulation(); showToast('Demo stopped'); }
+function applyStream(){ const url = document.getElementById('streamUrl').value.trim(); if(!url) return alert('paste HLS or MJPEG URL'); const src = document.querySelector('#mainVideo source'); src.src = url; document.getElementById('crowdSource').textContent = 'Source: ' + url; video.load(); showToast('Stream applied (browser must support the format)'); }
+function womenSOS(){ const area = prompt('Enter location (e.g., Gate A)') || 'Unknown'; const note = prompt('Optional note') || ''; const inc = { id:'i'+Date.now(), title:'Women Safety Alert', area, priority:'high', note, status:'open', created:new Date().toISOString() }; state.incidents.unshift(inc); addEvent('incident_created', inc); renderIncidents(); showToast("Women's SOS sent — Security alerted"); showSms('+91 98765 43210', 'Women\'s SOS at '+area); }
+state.tasks.push({ id:'t1', title:'Check stage lighting', team:'AV', status:'inprogress' }); state.incidents.push({ id:'i1', title:'Food truck delayed', area:'Catering', priority:'medium', note:'ETA 20 mins', status:'open', created:new Date().toISOString() }); renderTasks(); renderIncidents(); renderTimeline();
+</script></body></html>
